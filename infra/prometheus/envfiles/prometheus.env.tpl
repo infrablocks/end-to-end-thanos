@@ -1,0 +1,1 @@
+PROMETHEUS_CONFIGURATION_FILE_OBJECT_PATH="${prometheus_configuration_file_object_path}"
