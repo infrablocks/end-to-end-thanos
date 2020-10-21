@@ -2,6 +2,10 @@ output "vpc_id" {
   value = module.base_network.vpc_id
 }
 
+output "availability_zones" {
+  value = module.base_network.availability_zones
+}
+
 output "public_subnet_ids" {
   value = module.base_network.public_subnet_ids
 }
