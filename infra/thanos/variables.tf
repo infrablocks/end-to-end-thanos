@@ -2,18 +2,17 @@ variable "region" {}
 variable "component" {}
 variable "deployment_identifier" {}
 
-variable "domain_name" {}
-
-variable "service_name" {}
 variable "service_desired_count" {}
 
 variable "secrets_bucket_name" {}
 
+variable "thanos_query_service_name" {}
 variable "thanos_query_image" {}
 variable "thanos_query_container_http_port" {}
 variable "thanos_query_host_http_port" {}
 variable "thanos_query_container_grpc_port" {}
 variable "thanos_query_host_grpc_port" {}
+variable "thanos_query_replica_label" {}
 
 variable "domain_state_bucket_name" {}
 variable "domain_state_key" {}

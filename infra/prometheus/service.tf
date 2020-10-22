@@ -100,4 +100,5 @@ module "prometheus_service" {
   ecs_cluster_service_role_arn = data.terraform_remote_state.cluster.outputs.ecs_service_role_arn
 
   attach_to_load_balancer = "no"
+  include_log_group = "no"
 }

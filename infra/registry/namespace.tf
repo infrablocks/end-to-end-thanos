@@ -1,5 +1,5 @@
 locals {
-  service_registry_domain_name = "${var.component}-${var.deployment_identifier}-sd.${var.domain_name}"
+  service_registry_domain_name = "${var.component}-${var.deployment_identifier}-sd.${data.terraform_remote_state.domain.outputs.domain_name}"
 }
 
 resource "aws_service_discovery_private_dns_namespace" "service_registry" {

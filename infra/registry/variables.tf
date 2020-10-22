@@ -2,8 +2,6 @@ variable "region" {}
 variable "component" {}
 variable "deployment_identifier" {}
 
-variable "domain_name" {}
-
 variable "prometheus_service_name" {}
 
 variable "domain_state_bucket_name" {}

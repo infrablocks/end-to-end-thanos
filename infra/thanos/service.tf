@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_cloudwatch_log_group" "thanos_query" {
-  name = "/${var.component}/${var.deployment_identifier}/ecs-service/${var.service_name}/containers/${local.thanos_query_container_name}"
+  name = "/${var.component}/${var.deployment_identifier}/ecs-service/${var.thanos_query_service_name}/containers/${local.thanos_query_container_name}"
 
   tags = {
     DeploymentIdentifier = var.deployment_identifier
@@ -28,7 +28,7 @@ data "template_file" "thanos_query_task_container_definitions" {
   }
 }
 
-module "thanos_qyery_service" {
+module "thanos_query_service" {
   source  = "infrablocks/ecs-service/aws"
   version = "3.2.0"
 
@@ -40,7 +40,7 @@ module "thanos_qyery_service" {
 
   service_task_container_definitions = data.template_file.thanos_query_task_container_definitions.rendered
 
-  service_name = var.service_name
+  service_name = var.thanos_query_service_name
   service_image = var.thanos_query_image
   service_port = var.thanos_query_container_http_port
 
@@ -51,5 +51,7 @@ module "thanos_qyery_service" {
   ecs_cluster_id = data.terraform_remote_state.cluster.outputs.ecs_cluster_id
   ecs_cluster_service_role_arn = data.terraform_remote_state.cluster.outputs.ecs_service_role_arn
 
-  attach_to_load_balancer = "no"
+  target_group_arn = module.load_balancer.target_groups["default"].arn
+
+  include_log_group = "no"
 }

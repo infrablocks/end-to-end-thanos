@@ -4,8 +4,6 @@ vars:
   component: "%{hiera('component')}"
   deployment_identifier: "%{deployment_identifier}"
 
-  domain_name: "%{hiera('domain_name')}"
-
   instance: "%{hiera('instance')}"
 
   service_name: "prometheus-%{hiera('instance')}"
