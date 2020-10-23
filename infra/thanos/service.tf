@@ -54,4 +54,8 @@ module "thanos_query_service" {
   target_group_arn = module.load_balancer.target_groups["default"].arn
 
   include_log_group = "no"
+
+  depends_on = [
+    module.load_balancer
+  ]
 }

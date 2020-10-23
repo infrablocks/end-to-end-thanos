@@ -4,24 +4,39 @@ variable "deployment_identifier" {}
 
 variable "instance" {}
 
-variable "service_name" {}
 variable "service_desired_count" {}
 
 variable "secrets_bucket_name" {}
+variable "storage_bucket_name" {}
+variable "storage_bucket_region" {}
 
+variable "prometheus_service_name" {}
 variable "prometheus_image" {}
 variable "prometheus_container_http_port" {}
 variable "prometheus_host_http_port" {}
 
+variable "prometheus_storage_tsdb_retention_time" {}
 variable "prometheus_storage_location" {}
-variable "prometheus_storage_bucket_name" {}
-variable "prometheus_storage_bucket_region" {}
 
 variable "thanos_sidecar_image" {}
 variable "thanos_sidecar_container_http_port" {}
 variable "thanos_sidecar_host_http_port" {}
 variable "thanos_sidecar_container_grpc_port" {}
 variable "thanos_sidecar_host_grpc_port" {}
+
+variable "thanos_store_service_name" {}
+variable "thanos_store_image" {}
+variable "thanos_store_container_http_port" {}
+variable "thanos_store_host_http_port" {}
+variable "thanos_store_container_grpc_port" {}
+variable "thanos_store_host_grpc_port" {}
+variable "thanos_store_storage_location" {}
+
+variable "thanos_compact_service_name" {}
+variable "thanos_compact_image" {}
+variable "thanos_compact_container_http_port" {}
+variable "thanos_compact_host_http_port" {}
+variable "thanos_compact_storage_location" {}
 
 variable "domain_state_bucket_name" {}
 variable "domain_state_key" {}

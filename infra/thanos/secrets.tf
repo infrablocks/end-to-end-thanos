@@ -17,8 +17,8 @@ data "template_file" "thanos_query_env" {
   vars = {
     thanos_http_address = "0.0.0.0:${var.thanos_query_container_http_port}"
     thanos_grpc_address = "0.0.0.0:${var.thanos_query_container_grpc_port}"
-    thanos_store_addresses = "dnssrv+${data.terraform_remote_state.registry.outputs.service_discovery_prometheus_address}"
-    thanos_query_replica_label = var.thanos_query_replica_label
+    thanos_store_addresses = "dnssrv+${data.terraform_remote_state.registry.outputs.service_discovery_prometheus_address},dnssrv+${data.terraform_remote_state.registry.outputs.service_discovery_thanos_store_address}"
+    thanos_query_replica_labels = join(",", var.thanos_query_replica_labels)
   }
 }
 

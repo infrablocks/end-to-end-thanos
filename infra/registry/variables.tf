@@ -3,6 +3,7 @@ variable "component" {}
 variable "deployment_identifier" {}
 
 variable "prometheus_service_name" {}
+variable "thanos_store_service_name" {}
 
 variable "domain_state_bucket_name" {}
 variable "domain_state_key" {}

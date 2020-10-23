@@ -5,6 +5,7 @@ vars:
   deployment_identifier: "%{deployment_identifier}"
 
   prometheus_service_name: "prometheus"
+  thanos_store_service_name: "thanos-store"
 
   domain_state_bucket_region: "%{hiera('domain_state_bucket_region')}"
   domain_state_bucket_name: "%{hiera('domain_state_bucket_name')}"

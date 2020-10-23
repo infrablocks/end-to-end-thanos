@@ -17,3 +17,11 @@ output "service_discovery_prometheus_service_registry_arn" {
 output "service_discovery_prometheus_address" {
   value = "${var.prometheus_service_name}.${local.service_registry_domain_name}"
 }
+
+output "service_discovery_thanos_store_service_registry_arn" {
+  value = aws_service_discovery_service.thanos_store.arn
+}
+
+output "service_discovery_thanos_store_address" {
+  value = "${var.thanos_store_service_name}.${local.service_registry_domain_name}"
+}

@@ -12,7 +12,9 @@ variable "thanos_query_container_http_port" {}
 variable "thanos_query_host_http_port" {}
 variable "thanos_query_container_grpc_port" {}
 variable "thanos_query_host_grpc_port" {}
-variable "thanos_query_replica_label" {}
+variable "thanos_query_replica_labels" {
+  type = list(string)
+}
 
 variable "domain_state_bucket_name" {}
 variable "domain_state_key" {}

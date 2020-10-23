@@ -6,24 +6,39 @@ vars:
 
   instance: "%{hiera('instance')}"
 
-  service_name: "prometheus-%{hiera('instance')}"
   service_desired_count: 1
 
   secrets_bucket_name: "%{hiera('secrets_bucket_name')}"
+  storage_bucket_name: "%{hiera('prometheus_storage_bucket_name')}"
+  storage_bucket_region: "%{hiera('prometheus_storage_bucket_region')}"
 
+  prometheus_service_name: "prometheus-%{hiera('instance')}"
   prometheus_image: "infrablocks/prometheus-aws:0.6.0-rc.3"
   prometheus_container_http_port: "9090"
   prometheus_host_http_port: "9090"
 
+  prometheus_storage_tsdb_retention_time: "14d"
   prometheus_storage_location: "/var/opt/prometheus"
-  prometheus_storage_bucket_name: "%{hiera('prometheus_storage_bucket_name')}"
-  prometheus_storage_bucket_region: "%{hiera('prometheus_storage_bucket_region')}"
 
-  thanos_sidecar_image: "infrablocks/thanos-sidecar-aws:0.2.0-rc.3"
+  thanos_sidecar_image: "infrablocks/thanos-sidecar-aws:0.2.0-rc.5"
   thanos_sidecar_container_http_port: "10902"
   thanos_sidecar_host_http_port: "10902"
   thanos_sidecar_container_grpc_port: "10901"
   thanos_sidecar_host_grpc_port: "10901"
+
+  thanos_store_service_name: "thanos-store-%{hiera('instance')}"
+  thanos_store_image: "infrablocks/thanos-store-aws:0.2.0-rc.5"
+  thanos_store_container_http_port: "10906"
+  thanos_store_host_http_port: "10906"
+  thanos_store_container_grpc_port: "10905"
+  thanos_store_host_grpc_port: "10905"
+  thanos_store_storage_location: "/var/opt/thanos"
+
+  thanos_compact_service_name: "thanos-compact-%{hiera('instance')}"
+  thanos_compact_image: "infrablocks/thanos-compact-aws:0.2.0-rc.5"
+  thanos_compact_container_http_port: "10912"
+  thanos_compact_host_http_port: "10912"
+  thanos_compact_storage_location: "/var/opt/thanos"
 
   domain_state_bucket_region: "%{hiera('domain_state_bucket_region')}"
   domain_state_bucket_name: "%{hiera('domain_state_bucket_name')}"

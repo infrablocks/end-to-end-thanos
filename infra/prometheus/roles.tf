@@ -1,6 +1,6 @@
-resource "aws_iam_role" "prometheus_task_role" {
+resource "aws_iam_role" "service_role" {
   description        = "prometheus-task-role-${var.component}-${var.deployment_identifier}-${var.instance}"
-  assume_role_policy = templatefile("${path.module}/policies/prometheus-task-assume-role-policy.json.tpl", {})
+  assume_role_policy = templatefile("${path.module}/policies/service-assume-role-policy.json.tpl", {})
 
   tags = {
     Component: var.component
@@ -8,10 +8,10 @@ resource "aws_iam_role" "prometheus_task_role" {
   }
 }
 
-resource "aws_iam_role_policy" "prometheus_task_policy" {
-  role   = aws_iam_role.prometheus_task_role.id
-  policy = templatefile("${path.module}/policies/prometheus-task-policy.json.tpl", {
-    prometheus_storage_bucket_name = var.prometheus_storage_bucket_name,
+resource "aws_iam_role_policy" "service_policy" {
+  role   = aws_iam_role.service_role.id
+  policy = templatefile("${path.module}/policies/service-policy.json.tpl", {
+    prometheus_storage_bucket_name = var.storage_bucket_name,
     secrets_bucket_name = var.secrets_bucket_name
   })
 }

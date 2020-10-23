@@ -3,6 +3,7 @@ global:
   evaluation_interval: 15s
 
   external_labels:
+    availability_zone: "$${SELF_AVAILABILITY_ZONE}"
     replica: "${instance}"
 
 scrape_configs:

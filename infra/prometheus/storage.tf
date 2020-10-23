@@ -2,7 +2,7 @@ module "storage_bucket" {
   source = "infrablocks/encrypted-bucket/aws"
   version = "1.5.0-rc.1"
 
-  bucket_name = var.prometheus_storage_bucket_name
+  bucket_name = var.storage_bucket_name
 
   allow_destroy_when_objects_present = "yes"
 
