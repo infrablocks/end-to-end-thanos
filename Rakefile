@@ -187,8 +187,8 @@ namespace :deployment do
 
     Rake::Task['thanos:destroy'].invoke(deployment_identifier)
     Rake::Task['prometheus:destroy_all'].invoke(deployment_identifier)
-    Rake::Task['registry:destroy'].invoke(deployment_identifier)
-    Rake::Task['cluster:destroy'].invoke(deployment_identifier)
+    # Rake::Task['registry:destroy'].invoke(deployment_identifier)
+    # Rake::Task['cluster:destroy'].invoke(deployment_identifier)
     # Rake::Task['network:destroy'].invoke(deployment_identifier)
     # Rake::Task['certificate:destroy'].invoke(deployment_identifier)
     # Rake::Task['domain:destroy'].invoke(deployment_identifier, domain_name)
