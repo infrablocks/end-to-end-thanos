@@ -1,43 +1,61 @@
+# frozen_string_literal: true
+
 require 'confidante'
-require 'rake_terraform'
 require 'rake_docker'
 require 'rake_ssh'
+require 'rake_terraform'
+require 'rubocop/rake_task'
 
 configuration = Confidante.configuration
 
 RakeTerraform.define_installation_tasks(
-    path: File.join(Dir.pwd, 'vendor', 'terraform'),
-    version: '1.1.7')
+  path: File.join(Dir.pwd, 'vendor', 'terraform'),
+  version: '1.1.7'
+)
+
+RuboCop::RakeTask.new
+
+namespace :build do
+  namespace :code do
+    desc 'Run all checks on the build code'
+    task check: [:rubocop]
+
+    desc 'Attempt to automatically fix issues with the build code'
+    task fix: [:'rubocop:autocorrect_all']
+  end
+end
 
 namespace :bootstrap do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'bootstrap',
-      argument_names: [:deployment_identifier]
+    configuration_name: 'bootstrap',
+    argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-        .for_scope(args.to_h.merge(role: 'bootstrap'))
+                    .for_scope(args.to_h.merge(role: 'bootstrap'))
 
     t.source_directory = 'infra/bootstrap'
     t.work_directory = 'build'
 
     t.state_file =
-        File.join(
-            Dir.pwd,
-            "state/bootstrap/#{args.deployment_identifier}.tfstate")
+      File.join(
+        Dir.pwd,
+        "state/bootstrap/#{args.deployment_identifier}.tfstate"
+      )
     t.vars = configuration.vars
   end
 end
 
 namespace :domain do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'domain',
-      argument_names: [:deployment_identifier, :domain_name]
+    configuration_name: 'domain',
+    argument_names: %i[deployment_identifier domain_name]
   ) do |t, args|
     configuration = configuration
-        .for_overrides(domain_name: args.domain_name)
-        .for_scope(
-            {deployment_identifier: args.deployment_identifier}
-                .merge(role: 'domain'))
+                    .for_overrides(domain_name: args.domain_name)
+                    .for_scope(
+                      { deployment_identifier: args.deployment_identifier }
+                        .merge(role: 'domain')
+                    )
 
     t.source_directory = 'infra/domain'
     t.work_directory = 'build'
@@ -49,11 +67,11 @@ end
 
 namespace :certificate do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'certificate',
-      argument_names: [:deployment_identifier]
+    configuration_name: 'certificate',
+    argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-        .for_scope(args.to_h.merge(role: 'certificate'))
+                    .for_scope(args.to_h.merge(role: 'certificate'))
 
     t.source_directory = 'infra/certificate'
     t.work_directory = 'build'
@@ -65,11 +83,11 @@ end
 
 namespace :network do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'network',
-      argument_names: [:deployment_identifier]
+    configuration_name: 'network',
+    argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-        .for_scope(args.to_h.merge(role: 'network'))
+                    .for_scope(args.to_h.merge(role: 'network'))
 
     t.source_directory = 'infra/network'
     t.work_directory = 'build'
@@ -81,11 +99,11 @@ end
 
 namespace :cluster do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'cluster',
-      argument_names: [:deployment_identifier]
+    configuration_name: 'cluster',
+    argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-        .for_scope(args.to_h.merge(role: 'cluster'))
+                    .for_scope(args.to_h.merge(role: 'cluster'))
 
     t.source_directory = 'infra/cluster'
     t.work_directory = 'build'
@@ -95,18 +113,19 @@ namespace :cluster do
   end
 
   RakeSSH.define_key_tasks(
-      namespace: :key,
-      path: 'config/secrets/cluster/',
-      comment: 'maintainers@infrablocks.io')
+    namespace: :key,
+    path: 'config/secrets/cluster/',
+    comment: 'maintainers@infrablocks.io'
+  )
 end
 
 namespace :registry do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'registry',
-      argument_names: [:deployment_identifier]
+    configuration_name: 'registry',
+    argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-        .for_scope(args.to_h.merge(role: 'registry'))
+                    .for_scope(args.to_h.merge(role: 'registry'))
 
     t.source_directory = 'infra/registry'
     t.work_directory = 'build'
@@ -118,15 +137,17 @@ end
 
 namespace :prometheus do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'prometheus',
-      argument_names: [:deployment_identifier, :instance]
+    configuration_name: 'prometheus',
+    argument_names: %i[deployment_identifier instance]
   ) do |t, args|
     configuration = configuration
-        .for_overrides(
-            instance: args.instance)
-        .for_scope(
-            {deployment_identifier: args.deployment_identifier}
-                .merge(role: 'prometheus'))
+                    .for_overrides(
+                      instance: args.instance
+                    )
+                    .for_scope(
+                      { deployment_identifier: args.deployment_identifier }
+                        .merge(role: 'prometheus')
+                    )
 
     t.source_directory = 'infra/prometheus'
     t.work_directory = 'build'
@@ -135,16 +156,18 @@ namespace :prometheus do
     t.vars = configuration.vars
   end
 
+  desc 'Provision all of the prometheus instances'
   task :provision_all, [:deployment_identifier] do |_, args|
-    ["1", "2", "3"].each do |instance|
-      Rake::Task['prometheus:provision'].invoke(*(args.to_a.append(instance)))
+    %w[1 2 3].each do |instance|
+      Rake::Task['prometheus:provision'].invoke(*args.to_a.append(instance))
       Rake::Task['prometheus:provision'].reenable
     end
   end
 
+  desc 'Destroy all of the prometheus instances'
   task :destroy_all, [:deployment_identifier] do |_, args|
-    ["3", "2", "1"].each do |instance|
-      Rake::Task['prometheus:destroy'].invoke(*(args.to_a.append(instance)))
+    %w[3 2 1].each do |instance|
+      Rake::Task['prometheus:destroy'].invoke(*args.to_a.append(instance))
       Rake::Task['prometheus:destroy'].reenable
     end
   end
@@ -152,11 +175,11 @@ end
 
 namespace :thanos do
   RakeTerraform.define_command_tasks(
-      configuration_name: 'thanos',
-      argument_names: [:deployment_identifier]
+    configuration_name: 'thanos',
+    argument_names: [:deployment_identifier]
   ) do |t, args|
     configuration = configuration
-        .for_scope(args.to_h.merge(role: 'thanos'))
+                    .for_scope(args.to_h.merge(role: 'thanos'))
 
     t.source_directory = 'infra/thanos'
     t.work_directory = 'build'
@@ -167,6 +190,7 @@ namespace :thanos do
 end
 
 namespace :deployment do
+  desc 'Provision the whole end-to-end example.'
   task :provision, [:deployment_identifier, :domain_name] do |_, args|
     deployment_identifier = args.deployment_identifier
     domain_name = args.domain_name
@@ -181,6 +205,7 @@ namespace :deployment do
     Rake::Task['thanos:provision'].invoke(deployment_identifier)
   end
 
+  desc 'Destroy the whole end-to-end example.'
   task :destroy, [:deployment_identifier, :domain_name] do |_, args|
     deployment_identifier = args.deployment_identifier
     domain_name = args.domain_name
